@@ -1,0 +1,43 @@
+{
+  "profiler": "ydata-profiling 4.18.4",
+  "source": "wine_quality.csv",
+  "rows": 5000,
+  "columns": 12,
+  "missing_cells": 0,
+  "duplicate_rows": 0,
+  "thresholds": {
+    "zeros": "share of zeros > 1%",
+    "unique": "distinct count equals row count",
+    "skewness": "absolute skewness > 20",
+    "imbalance": "entropy imbalance score > 0.5",
+    "high_correlation": "absolute correlation > 0.9"
+  },
+  "alerts": [
+    {
+      "type": "ZEROS",
+      "column": "citric acid",
+      "n_zeros": 425,
+      "p_zeros": 0.085
+    },
+    {
+      "type": "UNIQUE",
+      "column": "pH",
+      "n_distinct": 5000,
+      "p_distinct": 1.0
+    }
+  ],
+  "variables": [
+    {"column": "fixed acidity", "type": "Numeric", "n_distinct": 4914, "n_zeros": 0, "skewness": 0.052},
+    {"column": "volatile acidity", "type": "Numeric", "n_distinct": 4949, "n_zeros": 0, "skewness": 0.102},
+    {"column": "citric acid", "type": "Numeric", "n_distinct": 4576, "n_zeros": 425, "skewness": 0.381, "alert": "ZEROS"},
+    {"column": "residual sugar", "type": "Numeric", "n_distinct": 4355, "n_zeros": 0, "skewness": 0.512},
+    {"column": "chlorides", "type": "Numeric", "n_distinct": 4738, "n_zeros": 0, "skewness": 0.238},
+    {"column": "free sulfur dioxide", "type": "Numeric", "n_distinct": 4598, "n_zeros": 0, "skewness": 0.288},
+    {"column": "total sulfur dioxide", "type": "Numeric", "n_distinct": 4420, "n_zeros": 0, "skewness": 0.393},
+    {"column": "density", "type": "Numeric", "n_distinct": 4999, "n_zeros": 0, "skewness": 0.029},
+    {"column": "pH", "type": "Numeric", "n_distinct": 5000, "n_zeros": 0, "skewness": -0.004, "alert": "UNIQUE"},
+    {"column": "sulphates", "type": "Numeric", "n_distinct": 4865, "n_zeros": 0, "skewness": 0.130},
+    {"column": "alcohol", "type": "Numeric", "n_distinct": 4858, "n_zeros": 0, "skewness": 0.199},
+    {"column": "quality", "type": "Categorical", "n_distinct": 5, "imbalance": 0.288, "counts": {"Medium-Low": 2151, "Medium": 2016, "Medium-High": 620, "Low": 163, "High": 50}}
+  ]
+}
