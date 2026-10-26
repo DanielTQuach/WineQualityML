@@ -1,9 +1,13 @@
-"""Train the first wine-quality classifier: an untuned random forest.
+"""Train an untuned random-forest classifier for wine quality.
 
-The target is the five-class `quality` column in wine_quality.csv. Rows are
-split 80/20 with stratification so each class appears in both sets. The
-forest is fit only on the training set. The held-out 20% is used once, for
-the reported test metrics.
+RandomForestClassifier is constructed with no arguments, so every
+hyperparameter stays at the scikit-learn default: 100 trees, Gini splits,
+max_features="sqrt", no depth limit, bootstrap on, oob_score off, and
+random_state left unset. String class labels are accepted directly.
+
+The split matches the other models: 80/20, stratified, random_state=42.
+Five-fold cross-validation stays on the training rows. The held-out 20% is
+used once, for the reported test metrics.
 """
 
 from __future__ import annotations
@@ -32,7 +36,6 @@ METRICS_PATH = ROOT / "reports" / "random_forest_metrics.json"
 LABELS = ["Low", "Medium-Low", "Medium", "Medium-High", "High"]
 RANDOM_STATE = 42
 TEST_SIZE = 0.2
-N_ESTIMATORS = 200
 
 
 def round_metric(value: float) -> float:
@@ -52,21 +55,12 @@ def main() -> None:
         stratify=y,
     )
 
-    model = RandomForestClassifier(
-        n_estimators=N_ESTIMATORS,
-        oob_score=True,
-        random_state=RANDOM_STATE,
-        n_jobs=-1,
-    )
+    model = RandomForestClassifier()
     model.fit(X_train, y_train)
 
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE)
     cv_scores = cross_validate(
-        RandomForestClassifier(
-            n_estimators=N_ESTIMATORS,
-            random_state=RANDOM_STATE,
-            n_jobs=-1,
-        ),
+        RandomForestClassifier(),
         X_train,
         y_train,
         cv=cv,
@@ -133,6 +127,7 @@ def main() -> None:
         reverse=True,
     )
 
+    params = model.get_params()
     metrics = {
         "model": "RandomForestClassifier",
         "source": DATA_PATH.name,
@@ -142,15 +137,17 @@ def main() -> None:
         "n_test": int(len(X_test)),
         "labels": LABELS,
         "hyperparameters": {
-            "n_estimators": N_ESTIMATORS,
-            "criterion": "gini",
-            "max_depth": None,
-            "max_features": "sqrt",
-            "min_samples_leaf": 1,
-            "min_samples_split": 2,
-            "bootstrap": True,
-            "class_weight": None,
-            "oob_score": True,
+            "n_estimators": params["n_estimators"],
+            "criterion": params["criterion"],
+            "max_depth": params["max_depth"],
+            "max_features": params["max_features"],
+            "min_samples_leaf": params["min_samples_leaf"],
+            "min_samples_split": params["min_samples_split"],
+            "bootstrap": params["bootstrap"],
+            "class_weight": params["class_weight"],
+            "oob_score": params["oob_score"],
+            "n_jobs": params["n_jobs"],
+            "random_state": params["random_state"],
         },
         "majority_class_baseline": {
             "class": str(majority),
@@ -180,7 +177,6 @@ def main() -> None:
             "balanced_accuracy": round_metric(balanced_accuracy_score(y_test, y_pred)),
             "f1_macro": round_metric(report["macro avg"]["f1-score"]),
             "f1_weighted": round_metric(report["weighted avg"]["f1-score"]),
-            "oob_accuracy": round_metric(model.oob_score_),
             "per_class": per_class,
             "confusion_matrix": {
                 "rows": "true label",
@@ -200,11 +196,17 @@ def main() -> None:
     METRICS_PATH.write_text(json.dumps(metrics, indent=2) + "\n")
 
     print(f"Train rows: {metrics['n_train']}  Test rows: {metrics['n_test']}")
+    print(
+        "Defaults: "
+        f"{params['n_estimators']} trees, "
+        f"max_features={params['max_features']}, "
+        f"oob_score={params['oob_score']}, "
+        f"random_state={params['random_state']}"
+    )
     print(f"Majority baseline ({majority}) accuracy: {metrics['majority_class_baseline']['test_accuracy']}")
     print(f"Test accuracy: {metrics['test']['accuracy']}")
     print(f"Test balanced accuracy: {metrics['test']['balanced_accuracy']}")
     print(f"Test macro F1: {metrics['test']['f1_macro']}")
-    print(f"OOB accuracy: {metrics['test']['oob_accuracy']}")
     print(f"5-fold train macro F1: {metrics['cross_validation_on_train']['f1_macro_mean']} ± {metrics['cross_validation_on_train']['f1_macro_std']}")
     print("Confusion matrix (rows true, columns predicted):")
     print(LABELS)
