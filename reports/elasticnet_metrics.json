@@ -1,0 +1,348 @@
+{
+  "model": "LogisticRegression",
+  "loss": "multinomial (softmax) with elastic-net penalty",
+  "estimator": "Pipeline(StandardScaler, LogisticRegression)",
+  "source": "wine_quality.csv",
+  "random_state": 42,
+  "test_size": 0.2,
+  "n_train": 4000,
+  "n_test": 1000,
+  "labels": [
+    "Low",
+    "Medium-Low",
+    "Medium",
+    "Medium-High",
+    "High"
+  ],
+  "preprocessing": {
+    "StandardScaler": {
+      "with_mean": true,
+      "with_std": true,
+      "fit_on": "training fold only"
+    }
+  },
+  "hyperparameters": {
+    "C": 1.0,
+    "l1_ratio": 0.5,
+    "penalty": "elasticnet",
+    "solver": "saga",
+    "max_iter": 100,
+    "tol": 0.0001,
+    "fit_intercept": true,
+    "class_weight": null,
+    "random_state": 42,
+    "n_iter": [
+      21
+    ],
+    "converged": true,
+    "nonzero_features": 11,
+    "n_features": 11
+  },
+  "majority_class_baseline": {
+    "class": "Medium-Low",
+    "test_accuracy": 0.43,
+    "test_balanced_accuracy": 0.2,
+    "test_f1_macro": 0.1203
+  },
+  "cross_validation_on_train": {
+    "folds": 5,
+    "accuracy_mean": 0.4315,
+    "accuracy_std": 0.0161,
+    "balanced_accuracy_mean": 0.2045,
+    "balanced_accuracy_std": 0.0074,
+    "f1_macro_mean": 0.1798,
+    "f1_macro_std": 0.0062
+  },
+  "test": {
+    "accuracy": 0.414,
+    "balanced_accuracy": 0.1956,
+    "f1_macro": 0.1675,
+    "f1_weighted": 0.3522,
+    "per_class": [
+      {
+        "label": "Low",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 33
+      },
+      {
+        "label": "Medium-Low",
+        "precision": 0.4333,
+        "recall": 0.7326,
+        "f1": 0.5445,
+        "support": 430
+      },
+      {
+        "label": "Medium",
+        "precision": 0.3626,
+        "recall": 0.2457,
+        "f1": 0.2929,
+        "support": 403
+      },
+      {
+        "label": "Medium-High",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 124
+      },
+      {
+        "label": "High",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 10
+      }
+    ],
+    "confusion_matrix": {
+      "rows": "true label",
+      "columns": "predicted label",
+      "labels": [
+        "Low",
+        "Medium-Low",
+        "Medium",
+        "Medium-High",
+        "High"
+      ],
+      "values": [
+        [
+          0,
+          19,
+          14,
+          0,
+          0
+        ],
+        [
+          0,
+          315,
+          115,
+          0,
+          0
+        ],
+        [
+          0,
+          304,
+          99,
+          0,
+          0
+        ],
+        [
+          0,
+          82,
+          42,
+          0,
+          0
+        ],
+        [
+          0,
+          7,
+          3,
+          0,
+          0
+        ]
+      ]
+    }
+  },
+  "intercepts": {
+    "Low": -1.0325,
+    "Medium-Low": 1.5729,
+    "Medium": 1.5067,
+    "Medium-High": 0.3224,
+    "High": -2.3696
+  },
+  "coefficients": [
+    {
+      "feature": "fixed acidity",
+      "coefficients_on_standardized_features": {
+        "Low": -0.0049,
+        "Medium-Low": 0.0,
+        "Medium": 0.0111,
+        "Medium-High": 0.0202,
+        "High": -0.5043
+      },
+      "mean_absolute_coefficient": 0.1081
+    },
+    {
+      "feature": "sulphates",
+      "coefficients_on_standardized_features": {
+        "Low": 0.1027,
+        "Medium-Low": 0.0,
+        "Medium": -0.0399,
+        "Medium-High": -0.0217,
+        "High": 0.1348
+      },
+      "mean_absolute_coefficient": 0.0598
+    },
+    {
+      "feature": "citric acid",
+      "coefficients_on_standardized_features": {
+        "Low": -0.1099,
+        "Medium-Low": 0.048,
+        "Medium": 0.0,
+        "Medium-High": 0.0229,
+        "High": -0.0976
+      },
+      "mean_absolute_coefficient": 0.0557
+    },
+    {
+      "feature": "density",
+      "coefficients_on_standardized_features": {
+        "Low": 0.0444,
+        "Medium-Low": -0.0039,
+        "Medium": -0.0288,
+        "Medium-High": 0.0,
+        "High": 0.1892
+      },
+      "mean_absolute_coefficient": 0.0533
+    },
+    {
+      "feature": "pH",
+      "coefficients_on_standardized_features": {
+        "Low": 0.0459,
+        "Medium-Low": -0.0131,
+        "Medium": -0.0142,
+        "Medium-High": 0.0,
+        "High": 0.1439
+      },
+      "mean_absolute_coefficient": 0.0434
+    },
+    {
+      "feature": "free sulfur dioxide",
+      "coefficients_on_standardized_features": {
+        "Low": 0.0,
+        "Medium-Low": 0.0377,
+        "Medium": -0.0046,
+        "Medium-High": 0.1396,
+        "High": -0.0281
+      },
+      "mean_absolute_coefficient": 0.042
+    },
+    {
+      "feature": "chlorides",
+      "coefficients_on_standardized_features": {
+        "Low": -0.0756,
+        "Medium-Low": 0.0,
+        "Medium": -0.0057,
+        "Medium-High": 0.0149,
+        "High": 0.0388
+      },
+      "mean_absolute_coefficient": 0.027
+    },
+    {
+      "feature": "total sulfur dioxide",
+      "coefficients_on_standardized_features": {
+        "Low": 0.0395,
+        "Medium-Low": -0.0319,
+        "Medium": -0.0039,
+        "Medium-High": 0.0,
+        "High": 0.0243
+      },
+      "mean_absolute_coefficient": 0.0199
+    },
+    {
+      "feature": "alcohol",
+      "coefficients_on_standardized_features": {
+        "Low": 0.0,
+        "Medium-Low": 0.0,
+        "Medium": 0.0614,
+        "Medium-High": -0.0318,
+        "High": 0.0
+      },
+      "mean_absolute_coefficient": 0.0186
+    },
+    {
+      "feature": "residual sugar",
+      "coefficients_on_standardized_features": {
+        "Low": 0.0101,
+        "Medium-Low": 0.0254,
+        "Medium": -0.0206,
+        "Medium-High": 0.0,
+        "High": -0.0238
+      },
+      "mean_absolute_coefficient": 0.016
+    },
+    {
+      "feature": "volatile acidity",
+      "coefficients_on_standardized_features": {
+        "Low": 0.0385,
+        "Medium-Low": 0.0,
+        "Medium": 0.01,
+        "Medium-High": -0.0007,
+        "High": -0.0136
+      },
+      "mean_absolute_coefficient": 0.0126
+    }
+  ],
+  "feature_importance": [
+    {
+      "feature": "pH",
+      "permutation_importance_mean": -0.0002,
+      "permutation_importance_std": 0.0005
+    },
+    {
+      "feature": "volatile acidity",
+      "permutation_importance_mean": -0.0008,
+      "permutation_importance_std": 0.0018
+    },
+    {
+      "feature": "sulphates",
+      "permutation_importance_mean": -0.0008,
+      "permutation_importance_std": 0.0034
+    },
+    {
+      "feature": "citric acid",
+      "permutation_importance_mean": -0.0013,
+      "permutation_importance_std": 0.0034
+    },
+    {
+      "feature": "chlorides",
+      "permutation_importance_mean": -0.0025,
+      "permutation_importance_std": 0.001
+    },
+    {
+      "feature": "density",
+      "permutation_importance_mean": -0.0028,
+      "permutation_importance_std": 0.0026
+    },
+    {
+      "feature": "alcohol",
+      "permutation_importance_mean": -0.0033,
+      "permutation_importance_std": 0.0055
+    },
+    {
+      "feature": "total sulfur dioxide",
+      "permutation_importance_mean": -0.0035,
+      "permutation_importance_std": 0.0028
+    },
+    {
+      "feature": "residual sugar",
+      "permutation_importance_mean": -0.004,
+      "permutation_importance_std": 0.0039
+    },
+    {
+      "feature": "fixed acidity",
+      "permutation_importance_mean": -0.0048,
+      "permutation_importance_std": 0.0023
+    },
+    {
+      "feature": "free sulfur dioxide",
+      "permutation_importance_mean": -0.0055,
+      "permutation_importance_std": 0.0031
+    }
+  ],
+  "train_class_counts": {
+    "Low": 130,
+    "Medium-Low": 1721,
+    "Medium": 1613,
+    "Medium-High": 496,
+    "High": 40
+  },
+  "test_class_counts": {
+    "Low": 33,
+    "Medium-Low": 430,
+    "Medium": 403,
+    "Medium-High": 124,
+    "High": 10
+  }
+}
