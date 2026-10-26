@@ -5,14 +5,12 @@ used. n_estimators, criterion, bootstrap, and random_state stay fixed so the
 240 forests differ only in min_samples_leaf, max_depth, max_features, and
 class_weight.
 
-Primary score is 5-fold mean macro F1. Balanced accuracy and accuracy are
-recorded beside it. Results land in reports/random_forest_grid.json and
-reports/random_forest_grid_macro_f1.png.
+Primary score is 5-fold mean accuracy. The figure is written to
+reports/random_forest_grid_accuracy.png. No JSON file is written.
 """
 
 from __future__ import annotations
 
-import json
 import os
 import tempfile
 from pathlib import Path
@@ -30,8 +28,7 @@ from sklearn.model_selection import ParameterGrid, StratifiedKFold, cross_valida
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "wine_quality.csv"
-JSON_PATH = ROOT / "reports" / "random_forest_grid.json"
-FIGURE_PATH = ROOT / "reports" / "random_forest_grid_macro_f1.png"
+FIGURE_PATH = ROOT / "reports" / "random_forest_grid_accuracy.png"
 
 RANDOM_STATE = 42
 TEST_SIZE = 0.2
@@ -101,11 +98,7 @@ def evaluate(params: dict, X_train: pd.DataFrame, y_train: pd.Series) -> dict:
         X_train,
         y_train,
         cv=cv,
-        scoring={
-            "f1_macro": "f1_macro",
-            "balanced_accuracy": "balanced_accuracy",
-            "accuracy": "accuracy",
-        },
+        scoring="accuracy",
         n_jobs=1,
     )
     return {
@@ -117,12 +110,8 @@ def evaluate(params: dict, X_train: pd.DataFrame, y_train: pd.Series) -> dict:
         "max_features_label": feature_label(params["max_features"]),
         "class_weight_label": weight_label(params["class_weight"]),
         "is_default": is_default(params),
-        "f1_macro_mean": round_metric(scores["test_f1_macro"].mean()),
-        "f1_macro_std": round_metric(scores["test_f1_macro"].std()),
-        "balanced_accuracy_mean": round_metric(scores["test_balanced_accuracy"].mean()),
-        "balanced_accuracy_std": round_metric(scores["test_balanced_accuracy"].std()),
-        "accuracy_mean": round_metric(scores["test_accuracy"].mean()),
-        "accuracy_std": round_metric(scores["test_accuracy"].std()),
+        "accuracy_mean": round_metric(scores["test_score"].mean()),
+        "accuracy_std": round_metric(scores["test_score"].std()),
     }
 
 
@@ -136,7 +125,7 @@ def save_figure(results: list[dict]) -> None:
         ): row
         for row in results
     }
-    values = np.array([row["f1_macro_mean"] for row in results], dtype=float)
+    values = np.array([row["accuracy_mean"] for row in results], dtype=float)
     norm = Normalize(vmin=float(values.min()), vmax=float(values.max()))
     cmap = plt.cm.Blues
 
@@ -153,7 +142,7 @@ def save_figure(results: list[dict]) -> None:
             grid = np.array(
                 [
                     [
-                        lookup[(weight, features, depth, leaf)]["f1_macro_mean"]
+                        lookup[(weight, features, depth, leaf)]["accuracy_mean"]
                         for leaf in LEAF_VALUES
                     ]
                     for depth in DEPTH_LABELS
@@ -172,7 +161,7 @@ def save_figure(results: list[dict]) -> None:
             for depth_index, depth in enumerate(DEPTH_LABELS):
                 for leaf_index, leaf in enumerate(LEAF_VALUES):
                     cell = lookup[(weight, features, depth, leaf)]
-                    score = cell["f1_macro_mean"]
+                    score = cell["accuracy_mean"]
                     text_color = "white" if norm(score) > 0.62 else "black"
                     ax.text(
                         leaf_index,
@@ -196,7 +185,7 @@ def save_figure(results: list[dict]) -> None:
                             )
                         )
 
-    best = max(results, key=lambda row: row["f1_macro_mean"])
+    best = max(results, key=lambda row: row["accuracy_mean"])
     best_ax = axes[
         WEIGHT_LABELS.index(best["class_weight_label"]),
         FEATURE_LABELS.index(best["max_features_label"]),
@@ -221,11 +210,11 @@ def save_figure(results: list[dict]) -> None:
         fraction=0.03,
         pad=0.02,
     )
-    colorbar.set_label("5-fold mean macro F1")
+    colorbar.set_label("5-fold mean accuracy")
     fig.suptitle(
-        "Random forest grid on the training split: 5-fold mean macro F1\n"
+        "Random forest grid on the training split: 5-fold mean accuracy\n"
         "240 combinations · 100 trees · wine_quality.csv · train rows only · "
-        "dashed box is the untuned default · solid box is the best cell",
+        "dashed box is the untuned default · solid box is the highest accuracy",
         fontsize=12,
     )
     FIGURE_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -249,62 +238,30 @@ def main() -> None:
     results = Parallel(n_jobs=-1, verbose=5)(
         delayed(evaluate)(params, X_train, y_train) for params in candidates
     )
-    results = sorted(results, key=lambda row: row["f1_macro_mean"], reverse=True)
-    for rank, row in enumerate(results, start=1):
-        row["rank"] = rank
-
+    results = sorted(results, key=lambda row: row["accuracy_mean"], reverse=True)
     best = results[0]
     default = next(row for row in results if row["is_default"])
-    payload = {
-        "model": "RandomForestClassifier",
-        "source": DATA_PATH.name,
-        "split": {
-            "test_size": TEST_SIZE,
-            "random_state": RANDOM_STATE,
-            "n_train": int(len(X_train)),
-            "held_out_test_used": False,
-        },
-        "cross_validation": {
-            "folds": N_SPLITS,
-            "shuffle": True,
-            "random_state": RANDOM_STATE,
-            "primary_metric": "f1_macro",
-        },
-        "fixed_hyperparameters": {
-            "n_estimators": N_ESTIMATORS,
-            "criterion": "gini",
-            "bootstrap": True,
-            "random_state": RANDOM_STATE,
-        },
-        "searched_hyperparameters": {
-            "min_samples_leaf": LEAF_VALUES,
-            "max_depth": DEPTH_VALUES,
-            "max_features": FEATURE_VALUES,
-            "class_weight": WEIGHT_VALUES,
-        },
-        "n_combinations": len(results),
-        "best": best,
-        "default": default,
-        "results": results,
-    }
+    default_rank = next(
+        rank for rank, row in enumerate(results, start=1) if row["is_default"]
+    )
+    tied = sum(row["accuracy_mean"] == best["accuracy_mean"] for row in results)
 
-    JSON_PATH.parent.mkdir(parents=True, exist_ok=True)
-    JSON_PATH.write_text(json.dumps(payload, indent=2) + "\n")
     save_figure(results)
 
     print(f"Combinations: {len(results)}")
     print(
-        "Best macro F1: "
-        f"{best['f1_macro_mean']} ± {best['f1_macro_std']} "
+        "Highest accuracy: "
+        f"{best['accuracy_mean']} ± {best['accuracy_std']} "
         f"(leaf={best['min_samples_leaf']}, depth={best['max_depth_label']}, "
         f"features={best['max_features_label']}, weight={best['class_weight_label']})"
     )
+    if tied > 1:
+        print(f"Combinations tied at that accuracy: {tied}")
     print(
-        "Default macro F1: "
-        f"{default['f1_macro_mean']} ± {default['f1_macro_std']} "
-        f"(rank {default['rank']} of {len(results)})"
+        "Default accuracy: "
+        f"{default['accuracy_mean']} ± {default['accuracy_std']} "
+        f"(rank {default_rank} of {len(results)})"
     )
-    print(f"Wrote {JSON_PATH}")
     print(f"Wrote {FIGURE_PATH}")
 
 
