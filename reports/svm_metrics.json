@@ -1,0 +1,233 @@
+{
+  "model": "SVC",
+  "estimator": "Pipeline(StandardScaler, SVC)",
+  "source": "wine_quality.csv",
+  "random_state": 42,
+  "test_size": 0.2,
+  "n_train": 4000,
+  "n_test": 1000,
+  "labels": [
+    "Low",
+    "Medium-Low",
+    "Medium",
+    "Medium-High",
+    "High"
+  ],
+  "preprocessing": {
+    "StandardScaler": {
+      "with_mean": true,
+      "with_std": true,
+      "fit_on": "training fold only"
+    }
+  },
+  "hyperparameters": {
+    "C": 1.0,
+    "kernel": "rbf",
+    "degree": 3,
+    "gamma": "scale",
+    "coef0": 0.0,
+    "shrinking": true,
+    "tol": 0.001,
+    "max_iter": -1,
+    "decision_function_shape": "ovr",
+    "break_ties": false,
+    "class_weight": null,
+    "random_state": null,
+    "n_support": {
+      "Low": 130,
+      "Medium-Low": 1670,
+      "Medium": 1591,
+      "Medium-High": 496,
+      "High": 40
+    },
+    "n_iter": [
+      251,
+      1031,
+      633,
+      1166,
+      3700,
+      1550,
+      4047,
+      7305,
+      2677,
+      7963
+    ]
+  },
+  "majority_class_baseline": {
+    "class": "Medium-Low",
+    "test_accuracy": 0.43,
+    "test_balanced_accuracy": 0.2,
+    "test_f1_macro": 0.1203
+  },
+  "cross_validation_on_train": {
+    "folds": 5,
+    "accuracy_mean": 0.4185,
+    "accuracy_std": 0.0165,
+    "balanced_accuracy_mean": 0.1993,
+    "balanced_accuracy_std": 0.0075,
+    "f1_macro_mean": 0.1792,
+    "f1_macro_std": 0.006
+  },
+  "test": {
+    "accuracy": 0.454,
+    "balanced_accuracy": 0.2162,
+    "f1_macro": 0.1941,
+    "f1_weighted": 0.4058,
+    "per_class": [
+      {
+        "label": "Low",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 33
+      },
+      {
+        "label": "Medium-Low",
+        "precision": 0.4562,
+        "recall": 0.6791,
+        "f1": 0.5458,
+        "support": 430
+      },
+      {
+        "label": "Medium",
+        "precision": 0.45,
+        "recall": 0.402,
+        "f1": 0.4246,
+        "support": 403
+      },
+      {
+        "label": "Medium-High",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 124
+      },
+      {
+        "label": "High",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 10
+      }
+    ],
+    "confusion_matrix": {
+      "rows": "true label",
+      "columns": "predicted label",
+      "labels": [
+        "Low",
+        "Medium-Low",
+        "Medium",
+        "Medium-High",
+        "High"
+      ],
+      "values": [
+        [
+          0,
+          24,
+          9,
+          0,
+          0
+        ],
+        [
+          0,
+          292,
+          138,
+          0,
+          0
+        ],
+        [
+          0,
+          241,
+          162,
+          0,
+          0
+        ],
+        [
+          0,
+          76,
+          48,
+          0,
+          0
+        ],
+        [
+          0,
+          7,
+          3,
+          0,
+          0
+        ]
+      ]
+    }
+  },
+  "feature_importance": [
+    {
+      "feature": "sulphates",
+      "permutation_importance_mean": 0.0104,
+      "permutation_importance_std": 0.0035
+    },
+    {
+      "feature": "total sulfur dioxide",
+      "permutation_importance_mean": 0.0089,
+      "permutation_importance_std": 0.0016
+    },
+    {
+      "feature": "chlorides",
+      "permutation_importance_mean": 0.007,
+      "permutation_importance_std": 0.0041
+    },
+    {
+      "feature": "volatile acidity",
+      "permutation_importance_mean": 0.0065,
+      "permutation_importance_std": 0.0039
+    },
+    {
+      "feature": "pH",
+      "permutation_importance_mean": 0.0065,
+      "permutation_importance_std": 0.0059
+    },
+    {
+      "feature": "density",
+      "permutation_importance_mean": 0.0064,
+      "permutation_importance_std": 0.0043
+    },
+    {
+      "feature": "alcohol",
+      "permutation_importance_mean": 0.0063,
+      "permutation_importance_std": 0.0042
+    },
+    {
+      "feature": "residual sugar",
+      "permutation_importance_mean": 0.0056,
+      "permutation_importance_std": 0.0031
+    },
+    {
+      "feature": "fixed acidity",
+      "permutation_importance_mean": 0.005,
+      "permutation_importance_std": 0.0036
+    },
+    {
+      "feature": "free sulfur dioxide",
+      "permutation_importance_mean": 0.0039,
+      "permutation_importance_std": 0.0045
+    },
+    {
+      "feature": "citric acid",
+      "permutation_importance_mean": 0.0034,
+      "permutation_importance_std": 0.0036
+    }
+  ],
+  "train_class_counts": {
+    "Low": 130,
+    "Medium-Low": 1721,
+    "Medium": 1613,
+    "Medium-High": 496,
+    "High": 40
+  },
+  "test_class_counts": {
+    "Low": 33,
+    "Medium-Low": 430,
+    "Medium": 403,
+    "Medium-High": 124,
+    "High": 10
+  }
+}
