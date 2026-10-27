@@ -38,11 +38,11 @@ For the XGBoost model, the hyperparameters tuned consisted of the learning rate,
 ### 2.2.3 SVM
 For the SVM model, the hyperparameters tuned consisted of the kernel, c, gamma, and class_weight. The parameters which were independent alone were trained with and evaluated alone while those parameters which interacted together were combined and evaluated jointly. In order to reduce overfitting, this model also opted for using 5-fold cross validation. Moreover, the model complexity was reduced if overfitting occurred by adjusting the c and gamma hyperparameters. 
 
-3. Experiments and Results
+# 3. Experiments and Results
 Refer to document report for figures.
-Random Forest - max_depth=20, max_sample_leaf=2, class_weight=balanced_subsample, num_trees=100 resulting in accuracy of 0.439
-XGBoost - max_depth of 4, min_child_weight of 10, learning rate of 0.05, and n_estimators of 100 resulting in accuracy of 4.34
-SVM - C=0.01, no gamma, resulting in accuracy of 0.430
+- Random Forest - max_depth=20, max_sample_leaf=2, class_weight=balanced_subsample, num_trees=100 resulting in accuracy of 0.439
+- XGBoost - max_dept=4, min_child_weight=10, learning_rate=0.05, and n_estimators=100 resulting in accuracy of 4.34
+- SVM - C=0.01, no gamma, resulting in accuracy of 0.430
 
-5. Conclusion
+# 5. Conclusion
 From these experiments, the random forest was the model with highest accuracy which also surpassed the nullclassifier model, with a 5-fold training accuracy of 0.439 at 100 trees, leaf size 2, depth 20, 2 features per split, and balanced subsample weights.
